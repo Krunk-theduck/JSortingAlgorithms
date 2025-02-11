@@ -99,6 +99,7 @@ input[type="range"] {
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    -webkit-appearance: none;
 }
 
 .hidden {
