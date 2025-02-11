@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sorting Visualizer</title>
+    <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+    <div id="info-panel">
+        <div class="info-item">Algorithm: <span id="algorithm-name">Bubble Sort</span></div>
+        <div class="info-item">Elements: <span id="element-count">50</span></div>
+        <div class="info-item">Delay: <span id="delay-time">100ms</span></div>
+        <div class="info-item">Comparisons: <span id="comparison-count">0</span></div>
+        <div class="info-item">Swaps: <span id="swap-count">0</span></div>
+        <div class="info-item">Writes: <span id="write-count">0</span></div>
+        <div class="info-item">Steps: <span id="step-count">0</span> / <span id="total-step-count">0</span></div>
+    </div>
+    <div id="visualization-area"></div>
+    <div id="control-panel">
+        <button id="start-button">Start</button>
+        <button id="pause-button">Pause</button>
+        <button id="reset-button">Reset</button>
+
+        <label for="speed-slider">Speed:</label>
+        <input type="range" id="speed-slider" min="0" max="100" value="10">
+
+        <label for="element-slider">Elements:</label>
+        <input type="range" id="element-slider" min="10" max="200" value="50">
+
+        <label for="algorithm-select">Algorithm:</label>
+        <select id="algorithm-select">
+            <option value="bubble">Bubble Sort</option>
+            <option value="insertion">Insertion Sort</option>
+            <option value="selection">Selection Sort</option>
+            <option value="quick">Quick Sort</option>
+        </select>
+
+		<br>
+
+		<div id="color-panel">
+			<h3>Color Customization</h3>
+			<div class="color-control-item">
+				<label for="default-bar-color">Default Bar Color:</label>
+				<input type="color" id="default-bar-color" value="#3498db">
+			</div>
+			<div id="second-color-container" class="color-control-item">
+				<label for="second-bar-color">Second Gradient Color:</label>
+				<input type="color" id="second-bar-color" value="#8e44ad">
+			</div>
+			<div class="color-control-item">
+				<label for="bar-style">Bar Style:</label>
+				<select id="bar-style" value="gradient">
+					<option value="gradient">Gradient</option>
+					<option value="solid">Solid</option>
+				</select>
+			</div>
+			<div class="color-control-item">
+				<label for="comparison-color">Comparison Color:</label>
+				<input type="color" id="comparison-color" value="#e74c3c">
+			</div>
+			<div class="color-control-item">
+				<label for="swap-color">Swap Color:</label>
+				<input type="color" id="swap-color" value="#f1c40f">
+			</div>
+			<div class="color-control-item">
+				<label for="scan-color">Scan Color:</label>
+				<input type="color" id="scan-color" value="#27ae60">
+			</div>
+		</div>
+		
+
+    <script type="text/javascript" src="main.js"></script>
+	<script type="text/javascript" src="ding.js"></script>
+</body>
+
+</html>
