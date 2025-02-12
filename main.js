@@ -81,16 +81,26 @@ function generateData(numElements) {
     renderBars();
 }
 
+
+// Update the estimateTotalSteps function
 function estimateTotalSteps(algorithm, numElements) {
     switch (algorithm) {
         case 'bubble':
-            return numElements * (numElements - 1); // Rough estimate
+            return numElements * (numElements - 1);
         case 'insertion':
-            return numElements * (numElements - 1) / 2; // Rough estimate
+            return numElements * (numElements - 1) / 2;
         case 'selection':
-            return numElements * (numElements - 1) / 2; // Rough estimate
+            return numElements * (numElements - 1) / 2;
         case 'quick':
-            return numElements * Math.log2(numElements); // Rough estimate
+            return numElements * Math.log2(numElements);
+        case 'merge':
+            return numElements * Math.log2(numElements);
+        case 'heap':
+            return numElements * Math.log2(numElements);
+        case 'shell':
+            return numElements * Math.log2(numElements);
+        case 'cocktail':
+            return numElements * (numElements - 1);
         default:
             return 0;
     }
@@ -343,6 +353,239 @@ function* partitionGenerator(low, high) {
     return i + 1;
 }
 
+// Merge Sort Generator
+function* mergeSortGenerator() {
+    yield* mergeSortHelperGenerator(0, data.length - 1);
+}
+
+function* mergeSortHelperGenerator(start, end) {
+    if (start < end) {
+        const mid = Math.floor((start + end) / 2);
+        yield* mergeSortHelperGenerator(start, mid);
+        yield* mergeSortHelperGenerator(mid + 1, end);
+        yield* mergeGenerator(start, mid, end);
+    }
+}
+
+function* mergeGenerator(start, mid, end) {
+    const leftArray = data.slice(start, mid + 1);
+    const rightArray = data.slice(mid + 1, end + 1);
+    let i = 0, j = 0, k = start;
+
+    while (i < leftArray.length && j < rightArray.length) {
+        setCompare([start + i, mid + 1 + j]);
+        comparisons++;
+        updateStats();
+        playSoundForValue(leftArray[i]);
+        playSoundForValue(rightArray[j]);
+        yield;
+
+        if (leftArray[i] <= rightArray[j]) {
+            data[k] = leftArray[i];
+            i++;
+        } else {
+            data[k] = rightArray[j];
+            j++;
+        }
+        setSwap([k]);
+        writes++;
+        updateStats();
+        renderBars();
+        k++;
+        yield;
+    }
+
+    while (i < leftArray.length) {
+        data[k] = leftArray[i];
+        setSwap([k]);
+        writes++;
+        updateStats();
+        renderBars();
+        playSoundForValue(leftArray[i]);
+        i++;
+        k++;
+        yield;
+    }
+
+    while (j < rightArray.length) {
+        data[k] = rightArray[j];
+        setSwap([k]);
+        writes++;
+        updateStats();
+        renderBars();
+        playSoundForValue(rightArray[j]);
+        j++;
+        k++;
+        yield;
+    }
+}
+
+// Heap Sort Generator
+function* heapSortGenerator() {
+    // Build max heap
+    for (let i = Math.floor(data.length / 2) - 1; i >= 0; i--) {
+        yield* heapifyGenerator(data.length, i);
+    }
+
+    // Extract elements from heap one by one
+    for (let i = data.length - 1; i > 0; i--) {
+        setSwap([0, i]);
+        playSoundForValue(data[0]);
+        playSoundForValue(data[i]);
+        [data[0], data[i]] = [data[i], data[0]];
+        swaps++;
+        writes++;
+        updateStats();
+        renderBars();
+        yield;
+
+        yield* heapifyGenerator(i, 0);
+    }
+}
+
+function* heapifyGenerator(n, i) {
+    let largest = i;
+    const left = 2 * i + 1;
+    const right = 2 * i + 2;
+
+    setCompare([largest, left]);
+    comparisons++;
+    updateStats();
+    if (left < n) {
+        playSoundForValue(data[left]);
+        yield;
+        if (data[left] > data[largest]) {
+            largest = left;
+        }
+    }
+
+    setCompare([largest, right]);
+    comparisons++;
+    updateStats();
+    if (right < n) {
+        playSoundForValue(data[right]);
+        yield;
+        if (data[right] > data[largest]) {
+            largest = right;
+        }
+    }
+
+    if (largest !== i) {
+        setSwap([i, largest]);
+        playSoundForValue(data[i]);
+        playSoundForValue(data[largest]);
+        [data[i], data[largest]] = [data[largest], data[i]];
+        swaps++;
+        writes++;
+        updateStats();
+        renderBars();
+        yield;
+
+        yield* heapifyGenerator(n, largest);
+    }
+}
+
+// Shell Sort Generator
+function* shellSortGenerator() {
+    let gap = Math.floor(data.length / 2);
+    
+    while (gap > 0) {
+        for (let i = gap; i < data.length; i++) {
+            let temp = data[i];
+            let j = i;
+            
+            while (j >= gap) {
+                setCompare([j - gap, j]);
+                comparisons++;
+                updateStats();
+                playSoundForValue(data[j - gap]);
+                playSoundForValue(data[j]);
+                yield;
+                
+                if (data[j - gap] > temp) {
+                    setSwap([j - gap, j]);
+                    data[j] = data[j - gap];
+                    swaps++;
+                    writes++;
+                    updateStats();
+                    renderBars();
+                    yield;
+                    j -= gap;
+                } else {
+                    break;
+                }
+            }
+            
+            if (j !== i) {
+                data[j] = temp;
+                writes++;
+                updateStats();
+                renderBars();
+                yield;
+            }
+        }
+        gap = Math.floor(gap / 2);
+    }
+}
+
+// Cocktail Sort Generator
+function* cocktailSortGenerator() {
+    let start = 0;
+    let end = data.length - 1;
+    let swapped = true;
+
+    while (swapped) {
+        swapped = false;
+
+        // Forward pass
+        for (let i = start; i < end; i++) {
+            setCompare([i, i + 1]);
+            comparisons++;
+            updateStats();
+            playSoundForValue(data[i]);
+            playSoundForValue(data[i + 1]);
+            yield;
+
+            if (data[i] > data[i + 1]) {
+                setSwap([i, i + 1]);
+                [data[i], data[i + 1]] = [data[i + 1], data[i]];
+                swaps++;
+                writes++;
+                updateStats();
+                renderBars();
+                swapped = true;
+                yield;
+            }
+        }
+
+        if (!swapped) break;
+        swapped = false;
+        end--;
+
+        // Backward pass
+        for (let i = end - 1; i >= start; i--) {
+            setCompare([i, i + 1]);
+            comparisons++;
+            updateStats();
+            playSoundForValue(data[i]);
+            playSoundForValue(data[i + 1]);
+            yield;
+
+            if (data[i] > data[i + 1]) {
+                setSwap([i, i + 1]);
+                [data[i], data[i + 1]] = [data[i + 1], data[i]];
+                swaps++;
+                writes++;
+                updateStats();
+                renderBars();
+                swapped = true;
+                yield;
+            }
+        }
+        start++;
+    }
+}
+
 // ========================================================
 // Scheduler: Run the chosen generator step-by-step.
 // ========================================================
@@ -402,28 +645,39 @@ function startSort() {
     switch (algo) {
         case 'bubble':
             algorithmName.textContent = 'Bubble Sort';
+            generator = bubbleSortGenerator();
             break;
         case 'insertion':
             algorithmName.textContent = 'Insertion Sort';
+            generator = insertionSortGenerator();
             break;
         case 'selection':
             algorithmName.textContent = 'Selection Sort';
+            generator = selectionSortGenerator();
             break;
         case 'quick':
             algorithmName.textContent = 'Quick Sort';
+            generator = quickSortGenerator();
+            break;
+        case 'merge':
+            algorithmName.textContent = 'Merge Sort';
+            generator = mergeSortGenerator();
+            break;
+        case 'heap':
+            algorithmName.textContent = 'Heap Sort';
+            generator = heapSortGenerator();
+            break;
+        case 'shell':
+            algorithmName.textContent = 'Shell Sort';
+            generator = shellSortGenerator();
+            break;
+        case 'cocktail':
+            algorithmName.textContent = 'Cocktail Sort';
+            generator = cocktailSortGenerator();
             break;
         default:
             algorithmName.textContent = 'Bubble Sort';
-    }
-    let generator;
-    if (algo === 'bubble') {
-        generator = bubbleSortGenerator();
-    } else if (algo === 'insertion') {
-        generator = insertionSortGenerator();
-    } else if (algo === 'selection') {
-        generator = selectionSortGenerator();
-    } else if (algo === 'quick') {
-        generator = quickSortGenerator();
+            generator = bubbleSortGenerator();
     }
     runGenerator(generator);
 }
