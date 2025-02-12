@@ -5,8 +5,8 @@
 const config = {
     barColors: {
       default: 'linear-gradient(to top, #3498db, #8e44ad)',
-      comparison: '#e74c3c', // Red for comparisons
-      swap: '#f1c40f',       // Yellow for swaps
+      comparison: '#f1c40f',
+      swap: '#e74c3c',
       verification: '#2ecc71' // Green for final verification scan
     },
     delay: 50 // Delay in milliseconds for each step
